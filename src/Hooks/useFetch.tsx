@@ -4,7 +4,7 @@ type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 
 interface UseFetchResult<T> {
   isLoading: boolean;
-  response: T | null;
+  data: T | null;
   error: string | null;
 }
 
@@ -15,7 +15,7 @@ export function useFetch<T>(
   payload?: object
 ): UseFetchResult<T> {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [response, setResponse] = useState<T | null>(null);
+  const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -46,8 +46,8 @@ export function useFetch<T>(
           throw new Error(`HTTP Error: ${res.status}`);
         }
 
-        const data: T = await res.json();
-        setResponse(data);
+        const result: T = await res.json();
+        setData(result);
       } catch (err) {
         if (err instanceof Error && err.name !== "AbortError") {
           setError(err.message);
@@ -64,5 +64,5 @@ export function useFetch<T>(
     };
   }, [url, method, condition, payload]);
 
-  return { isLoading, response, error };
+  return { isLoading, data, error };
 }

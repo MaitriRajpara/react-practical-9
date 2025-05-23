@@ -9,7 +9,7 @@ interface Post {
 }
 
 const PostList: React.FC = () => {
-  const { isLoading, response, error } = useFetch<Post[]>(
+  const { isLoading, data, error } = useFetch<Post[]>(
     "https://jsonplaceholder.typicode.com/posts",
     "get",
     true 
@@ -26,9 +26,9 @@ const PostList: React.FC = () => {
   return (
     <div>
       <h2>Posts</h2>
-      {response && response.length > 0 ? (
+      {data && data.length > 0 ? (
         <ul>
-          {response.slice(0, 15).map((post) => (
+          {data.slice(0, 15).map((post) => (
             <li key={post.id}>
               <strong>{post.title}</strong>
               <p>{post.body}</p>

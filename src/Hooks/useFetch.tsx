@@ -8,15 +8,15 @@ interface UseFetchResult<T> {
   error: string | null;
 }
 
-export function useFetch<T = any>(
+export function useFetch<T>(
   url: string,
   method: HttpMethod,
   condition: boolean,
   payload?: object
 ): UseFetchResult<T> {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<T | null>(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!condition) return;
@@ -46,11 +46,11 @@ export function useFetch<T = any>(
           throw new Error(`HTTP Error: ${res.status}`);
         }
 
-        const data = await res.json();
+        const data: T = await res.json();
         setResponse(data);
-      } catch (err: any) {
-        if (err.name !== "AbortError") {
-          setError(err.message || "Unknown error");
+      } catch (err) {
+        if (err instanceof Error && err.name !== "AbortError") {
+          setError(err.message);
         }
       } finally {
         setIsLoading(false);
@@ -60,7 +60,7 @@ export function useFetch<T = any>(
     fetchData();
 
     return () => {
-      controller.abort(); 
+      controller.abort();
     };
   }, [url, method, condition, payload]);
 
